@@ -18,6 +18,12 @@ function _jade(){
 }
 function _js(){
   return gulp.src("*.js")
+    // .pipe(babel({
+    //   presets: ['env']
+    // }))
+
+    // .pipe(jshint({"esversion":6}))
+    // .pipe(jshint.reporter('default'))
     .pipe(gulp.dest("dist"))
 }
 function _transpile(){//DOESNT WORK
@@ -33,6 +39,13 @@ function _lint(){
   return gulp.src("*.js")
     .pipe(jshint({"esversion":6}))
     .pipe(jshint.reporter('default'))
+    .pipe(gulp.dest("dist"))
+}
+function _babel(){
+  return gulp.src("*.js")
+    // .pipe(babel({
+    //   presets: ['env']
+    // }))
     .pipe(gulp.dest("dist"))
 }
 function watch(bs){
@@ -59,5 +72,5 @@ function browserSync(){
 }
 
 module.exports = {_html, watch, polyfill, _js, _bs,
-  default: gulp.series(_html, _jade, _js, _lint, _minify, polyfill, watch)
+  default: gulp.series(_html, _jade, _js, polyfill, _lint, _minify, _babel,  watch)
 }

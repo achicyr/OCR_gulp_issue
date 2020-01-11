@@ -5,7 +5,8 @@ const uglify = require("gulp-uglify")
 const jade = require("gulp-jade")
 // const babel = require("gulp-babel")
 // const babel = require("babel")
-
+// const runSequence = require('run-sequence');
+const browserSync = require('browser-sync').create();
 
 function _html(){
   return gulp.src("*.html")
@@ -16,13 +17,23 @@ function _jade(){
     .pipe(jade({"pretty":true}))
     .pipe(gulp.dest("dist"))
 }
-function _js(){
+function _transpile_js(){//DOESNT WORK
   return gulp.src("*.js")
     .pipe(gulp.dest("dist"))
 }
-function _transpile(){//DOESNT WORK
+function _js(){
   return gulp.src("*.js")
+    // .pipe(babel({
+    //   presets: ['env']
+    // }))
+
+    // .pipe(jshint({"esversion":6}))
+    // .pipe(jshint.reporter('default'))
     .pipe(gulp.dest("dist"))
+}
+function polyfill(){
+  return gulp.src("node_modules/babel-polyfill/browser.js")
+    .pipe(gulp.dest("dist/node_modules/babel-polyfill"))
 }
 function _minify(){//DOESNT WORK
   return gulp.src("blog.js")
@@ -35,14 +46,17 @@ function _lint(){
     .pipe(jshint.reporter('default'))
     .pipe(gulp.dest("dist"))
 }
+function _babel(){
+  return gulp.src("*.js")
+    // .pipe(babel({
+    //   presets: ['env']
+    // }))
+    .pipe(gulp.dest("dist"))
+}
 function watch(bs){
   gulp.watch("*.html", _html)
   gulp.watch("*.js", _js)
   //gulp.watch("dist/*.html").on('change', bs.reload)
-}
-function polyfill(){
-  return gulp.src("node_modules/babel-polyfill/browser.js")
-    .pipe(gulp.dest("dist/node_modules/babel-polyfill"))
 }
 
 function _bs(){
@@ -59,5 +73,5 @@ function browserSync(){
 }
 
 module.exports = {_html, watch, polyfill, _js, _bs,
-  default: gulp.series(_html, _jade, _js, _lint, _minify, polyfill, watch)
+  default: gulp.series(_html, _jade, _js, polyfill, _lint, _minify, _babel,  watch)
 }
