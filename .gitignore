@@ -2,4 +2,3 @@
 node_modules
 .babelrc
 functions.babel.js
-package-lock.json
